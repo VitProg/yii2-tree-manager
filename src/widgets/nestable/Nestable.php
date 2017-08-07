@@ -106,6 +106,8 @@ class Nestable extends Widget
     {
         parent::init();
 
+        $this->registerTranslations();
+
         if (empty($this->id)) {
             $this->id = $this->getId();
         }
@@ -149,6 +151,13 @@ class Nestable extends Widget
                 $this->_items = $this->prepareItems($items);
             }
         }
+    }
+
+    protected function registerTranslations() {
+        Yii::$app->i18n->translations['voskobovich/nestable'] = [
+            'class'          => 'yii\i18n\PhpMessageSource',
+            'basePath'       => '@app/messages',
+        ];
     }
 
     /**
