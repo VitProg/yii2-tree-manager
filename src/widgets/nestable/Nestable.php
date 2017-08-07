@@ -284,8 +284,8 @@ class Nestable extends Widget
     {
         $options = [
             'namePlaceholder' => $this->getPlaceholderForName(),
-            'deleteAlert' => ArrayHelper::getValue($this->texts['REMOVE_NODE_QUESTION'], Yii::t('voskobovich/nestable', 'REMOVE_NODE_QUESTION')),
-            'newNodeTitle' => ArrayHelper::getValue($this->texts['NEW_NODE_NAME'], Yii::t('voskobovich/nestable', 'NEW_NODE_NAME')),
+            'deleteAlert' => ArrayHelper::getValue($this->texts, 'REMOVE_NODE_QUESTION', Yii::t('voskobovich/nestable', 'REMOVE_NODE_QUESTION')),
+            'newNodeTitle' => ArrayHelper::getValue($this->texts, 'NEW_NODE_NAME', Yii::t('voskobovich/nestable', 'NEW_NODE_NAME')),
         ];
 
         $controller = Yii::$app->controller;
@@ -317,7 +317,7 @@ class Nestable extends Widget
      */
     public function getPlaceholderForName()
     {
-        return ArrayHelper::getValue($this->texts['NODE_NAME'], Yii::t('voskobovich/nestable', 'NODE_NAME'));
+        return ArrayHelper::getValue($this->texts, 'NODE_NAME', Yii::t('voskobovich/nestable', 'NODE_NAME'));
     }
 
     /**
@@ -328,16 +328,16 @@ class Nestable extends Widget
         echo Html::beginTag('div', ['class' => "{$this->id}-nestable-menu"]);
 
         echo Html::beginTag('div', ['class' => 'btn-group']);
-        echo Html::button(ArrayHelper::getValue($this->texts['ADD_NODE'], Yii::t('voskobovich/nestable', 'ADD_NODE')), [
+        echo Html::button(ArrayHelper::getValue($this->texts, 'ADD_NODE', Yii::t('voskobovich/nestable', 'ADD_NODE')), [
             'data-toggle' => 'modal',
             'data-target' => "#{$this->id}-new-node-modal",
             'class' => 'btn btn-success'
         ]);
-        echo Html::button(ArrayHelper::getValue($this->texts['COLLAPSE_ALL'], Yii::t('voskobovich/nestable', 'COLLAPSE_ALL')), [
+        echo Html::button(ArrayHelper::getValue($this->texts, 'COLLAPSE_ALL', Yii::t('voskobovich/nestable', 'COLLAPSE_ALL')), [
             'data-action' => 'collapse-all',
             'class' => 'btn btn-default'
         ]);
-        echo Html::button(ArrayHelper::getValue($this->texts['EXPAND_ALL'], Yii::t('voskobovich/nestable', 'EXPAND_ALL')), [
+        echo Html::button(ArrayHelper::getValue($this->texts, 'EXPAND_ALL', Yii::t('voskobovich/nestable', 'EXPAND_ALL')), [
             'data-action' => 'expand-all',
             'class' => 'btn btn-default',
             'style' => 'display: none'
@@ -366,9 +366,9 @@ class Nestable extends Widget
     {
         /** @var ActiveRecord $model */
         $model = new $this->modelClass;
-        $labelNewNode = ArrayHelper::getValue($this->texts['NEW_NODE'], Yii::t('voskobovich/nestable','NEW_NODE'));
-        $labelCloseButton = ArrayHelper::getValue($this->texts['CLOSE'], Yii::t('voskobovich/nestable','CLOSE'));
-        $labelCreateNode = ArrayHelper::getValue($this->texts['CREATE_NODE'], Yii::t('voskobovich/nestable','CREATE_NODE'));
+        $labelNewNode = ArrayHelper::getValue($this->texts, 'NEW_NODE', Yii::t('voskobovich/nestable','NEW_NODE'));
+        $labelCloseButton = ArrayHelper::getValue($this->texts, 'CLOSE', Yii::t('voskobovich/nestable','CLOSE'));
+        $labelCreateNode = ArrayHelper::getValue($this->texts, 'CREATE_NODE', Yii::t('voskobovich/nestable','CREATE_NODE'));
 
         echo <<<HTML
 <div class="modal" id="{$this->id}-new-node-modal" tabindex="-1" role="dialog" aria-labelledby="newNodeModalLabel">
@@ -439,17 +439,17 @@ HTML;
             ['class' => 'dd-input-name', 'placeholder' => $this->getPlaceholderForName()]);
 
         echo Html::beginTag('div', ['class' => 'btn-group']);
-        echo Html::button(ArrayHelper::getValue($this->texts['SAVE'], Yii::t('voskobovich/nestable', 'SAVE')), [
+        echo Html::button(ArrayHelper::getValue($this->texts, 'SAVE', Yii::t('voskobovich/nestable', 'SAVE')), [
             'data-action' => 'save',
             'class' => 'btn btn-success btn-sm',
         ]);
-        echo Html::a(ArrayHelper::getValue($this->texts['ADVANCED_EDITING'], Yii::t('voskobovich/nestable', 'ADVANCED_EDITING')),
+        echo Html::a(ArrayHelper::getValue($this->texts, 'ADVANCED_EDITING', Yii::t('voskobovich/nestable', 'ADVANCED_EDITING')),
             $item['update-url'], [
                 'data-action' => 'advanced-editing',
                 'class' => 'btn btn-default btn-sm',
                 'target' => '_blank'
             ]);
-        echo Html::button(ArrayHelper::getValue($this->texts['DELETE'], Yii::t('voskobovich/nestable', 'DELETE')), [
+        echo Html::button(ArrayHelper::getValue($this->texts, 'DELETE', Yii::t('voskobovich/nestable', 'DELETE')), [
             'data-action' => 'delete',
             'class' => 'btn btn-danger btn-sm'
         ]);
