@@ -36,6 +36,11 @@ class Nestable extends Widget
     public $nameAttribute = 'name';
 
     /**
+     * @var ActiveRecord|TreeInterface
+     */
+    public $root;
+
+    /**
      * Behavior key in list all behaviors on model
      * @var string
      */
@@ -83,6 +88,12 @@ class Nestable extends Widget
     public $formFieldsCallable;
 
     /**
+     * Custom texts
+     * @var array
+     */
+    public $texts = [];
+
+    /**
      * Структура меню в php array формате
      * @var array
      */
@@ -118,16 +129,25 @@ class Nestable extends Widget
             };
         }
 
-        /** @var ActiveRecord|TreeInterface $model */
-        $model = $this->modelClass;
+        if ($this->root) {
 
-        /** @var ActiveRecord[]|TreeInterface[] $rootNodes */
-        $rootNodes = $model::find()->roots()->all();
-
-        if (!empty($rootNodes[0])) {
             /** @var ActiveRecord|TreeInterface $items */
-            $items = $rootNodes[0]->populateTree();
+            $items = $this->root->populateTree();
             $this->_items = $this->prepareItems($items);
+
+        } else {
+
+            /** @var ActiveRecord|TreeInterface $model */
+            $model = $this->modelClass;
+
+            /** @var ActiveRecord[]|TreeInterface[] $rootNodes */
+            $rootNodes = $model::find()->roots()->all();
+
+            if (!empty($rootNodes[0])) {
+                /** @var ActiveRecord|TreeInterface $items */
+                $items = $rootNodes[0]->populateTree();
+                $this->_items = $this->prepareItems($items);
+            }
         }
     }
 
@@ -264,10 +284,8 @@ class Nestable extends Widget
     {
         $options = [
             'namePlaceholder' => $this->getPlaceholderForName(),
-            'deleteAlert' => Yii::t('vendor/voskobovich/yii2-tree-manager/widgets/nestable',
-                'The nobe will be removed together with the children. Are you sure?'),
-            'newNodeTitle' => Yii::t('vendor/voskobovich/yii2-tree-manager/widgets/nestable',
-                'Enter the new node name'),
+            'deleteAlert' => ArrayHelper::getValue($this->texts['REMOVE_NODE_QUESTION'], Yii::t('voskobovich/nestable', 'REMOVE_NODE_QUESTION')),
+            'newNodeTitle' => ArrayHelper::getValue($this->texts['NEW_NODE_NAME'], Yii::t('voskobovich/nestable', 'NEW_NODE_NAME')),
         ];
 
         $controller = Yii::$app->controller;
@@ -299,7 +317,7 @@ class Nestable extends Widget
      */
     public function getPlaceholderForName()
     {
-        return Yii::t('vendor/voskobovich/yii2-tree-manager/widgets/nestable', 'Node name');
+        return ArrayHelper::getValue($this->texts['NODE_NAME'], Yii::t('voskobovich/nestable', 'NODE_NAME'));
     }
 
     /**
@@ -310,16 +328,16 @@ class Nestable extends Widget
         echo Html::beginTag('div', ['class' => "{$this->id}-nestable-menu"]);
 
         echo Html::beginTag('div', ['class' => 'btn-group']);
-        echo Html::button(Yii::t('vendor/voskobovich/yii2-tree-manager/widgets/nestable', 'Add node'), [
+        echo Html::button(ArrayHelper::getValue($this->texts['ADD_NODE'], Yii::t('voskobovich/nestable', 'ADD_NODE')), [
             'data-toggle' => 'modal',
             'data-target' => "#{$this->id}-new-node-modal",
             'class' => 'btn btn-success'
         ]);
-        echo Html::button(Yii::t('vendor/voskobovich/yii2-tree-manager/widgets/nestable', 'Collapse all'), [
+        echo Html::button(ArrayHelper::getValue($this->texts['COLLAPSE_ALL'], Yii::t('voskobovich/nestable', 'COLLAPSE_ALL')), [
             'data-action' => 'collapse-all',
             'class' => 'btn btn-default'
         ]);
-        echo Html::button(Yii::t('vendor/voskobovich/yii2-tree-manager/widgets/nestable', 'Expand all'), [
+        echo Html::button(ArrayHelper::getValue($this->texts['EXPAND_ALL'], Yii::t('voskobovich/nestable', 'EXPAND_ALL')), [
             'data-action' => 'expand-all',
             'class' => 'btn btn-default',
             'style' => 'display: none'
@@ -348,9 +366,9 @@ class Nestable extends Widget
     {
         /** @var ActiveRecord $model */
         $model = new $this->modelClass;
-        $labelNewNode = Yii::t('vendor/voskobovich/yii2-tree-manager/widgets/nestable','New node');
-        $labelCloseButton = Yii::t('vendor/voskobovich/yii2-tree-manager/widgets/nestable','Close');
-        $labelCreateNode = Yii::t('vendor/voskobovich/yii2-tree-manager/widgets/nestable','Create node');
+        $labelNewNode = ArrayHelper::getValue($this->texts['NEW_NODE'], Yii::t('voskobovich/nestable','NEW_NODE'));
+        $labelCloseButton = ArrayHelper::getValue($this->texts['CLOSE'], Yii::t('voskobovich/nestable','CLOSE'));
+        $labelCreateNode = ArrayHelper::getValue($this->texts['CREATE_NODE'], Yii::t('voskobovich/nestable','CREATE_NODE'));
 
         echo <<<HTML
 <div class="modal" id="{$this->id}-new-node-modal" tabindex="-1" role="dialog" aria-labelledby="newNodeModalLabel">
@@ -421,17 +439,17 @@ HTML;
             ['class' => 'dd-input-name', 'placeholder' => $this->getPlaceholderForName()]);
 
         echo Html::beginTag('div', ['class' => 'btn-group']);
-        echo Html::button(Yii::t('vendor/voskobovich/yii2-tree-manager/widgets/nestable', 'Save'), [
+        echo Html::button(ArrayHelper::getValue($this->texts['SAVE'], Yii::t('voskobovich/nestable', 'SAVE')), [
             'data-action' => 'save',
             'class' => 'btn btn-success btn-sm',
         ]);
-        echo Html::a(Yii::t('vendor/voskobovich/yii2-tree-manager/widgets/nestable', 'Advanced editing'),
+        echo Html::a(ArrayHelper::getValue($this->texts['ADVANCED_EDITING'], Yii::t('voskobovich/nestable', 'ADVANCED_EDITING')),
             $item['update-url'], [
                 'data-action' => 'advanced-editing',
                 'class' => 'btn btn-default btn-sm',
                 'target' => '_blank'
             ]);
-        echo Html::button(Yii::t('vendor/voskobovich/yii2-tree-manager/widgets/nestable', 'Delete'), [
+        echo Html::button(ArrayHelper::getValue($this->texts['DELETE'], Yii::t('voskobovich/nestable', 'DELETE')), [
             'data-action' => 'delete',
             'class' => 'btn btn-danger btn-sm'
         ]);

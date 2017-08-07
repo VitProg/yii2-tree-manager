@@ -14,6 +14,11 @@ use yii\web\HttpException;
 class CreateNodeAction extends BaseAction
 {
     /**
+     * @var ActiveRecord|TreeInterface
+     */
+    public $root;
+
+    /**
      * @return null
      * @throws HttpException
      */
@@ -29,12 +34,16 @@ class CreateNodeAction extends BaseAction
             return $model;
         }
 
-        $roots = $model::find()->roots()->all();
-
-        if (isset($roots[0])) {
-            return $model->appendTo($roots[0])->save();
+        if ($this->root) {
+            return $model->appendTo($this->root)->save();
         } else {
-            return $model->makeRoot()->save();
+            $roots = $model::find()->roots()->all();
+
+            if (isset($roots[0])) {
+                return $model->appendTo($roots[0])->save();
+            } else {
+                return $model->makeRoot()->save();
+            }
         }
     }
 }
