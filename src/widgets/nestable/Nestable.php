@@ -156,7 +156,8 @@ class Nestable extends Widget
     protected function registerTranslations() {
         Yii::$app->i18n->translations['voskobovich/nestable'] = [
             'class'          => 'yii\i18n\PhpMessageSource',
-            'basePath'       => '@app/messages',
+            'sourceLanguage' => 'en-US',
+            'basePath'       => '@vendor/voskobovich/yii2-tree-manager/messages',
         ];
     }
 
